@@ -1,0 +1,1151 @@
+/* ── Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ── Keyframe Animations ── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInLeft { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes popIn { 0% { opacity: 0; transform: scale(0.85); } 70% { transform: scale(1.04); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes typing { from { width: 0; } to { width: 100%; } }
+@keyframes blink { 50% { border-color: transparent; } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(79, 134, 247, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(79, 134, 247, 0); } }
+@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+
+/* ── CSS Variables ── */
+.theme-dark {
+    --bg: #0f172a;
+    --page-bg: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+    --surface: rgba(30, 41, 59, 0.8);
+    --surface-strong: rgba(30, 41, 59, 0.96);
+    --card-bg: rgba(30, 41, 59, 0.9);
+    --card-bg-strong: rgba(15, 23, 42, 0.98);
+    --primary: #3b82f6;
+    --primary-strong: #2563eb;
+    --primary-soft: rgba(59, 130, 246, 0.14);
+    --text: #f1f5f9;
+    --text-soft: #94a3b8;
+    --muted: #cbd5e1;
+    --border: rgba(148, 163, 184, 0.25);
+    --shadow: rgba(15, 23, 42, 0.36);
+    --input-bg: rgba(15, 23, 42, 0.72);
+    --status-blue: #60a5fa;
+    --status-yellow: #fbbf24;
+    --status-green: #34d399;
+    --status-pink: #f9a8d4;
+    --tab-active: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+}
+
+.theme-light {
+    --bg: #f8fafc;
+    --page-bg: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    --surface: rgba(255, 255, 255, 0.94);
+    --surface-strong: rgba(255, 255, 255, 1);
+    --card-bg: rgba(255, 255, 255, 0.96);
+    --card-bg-strong: rgba(255, 255, 255, 1);
+    --primary: #2563eb;
+    --primary-strong: #1d4ed8;
+    --primary-soft: rgba(37, 99, 235, 0.08);
+    --text: #0f172a;
+    --text-soft: #64748b;
+    --muted: #475569;
+    --border: #e2e8f0;
+    --shadow: rgba(15, 23, 42, 0.08);
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --status-blue: #93c5fd;
+    --status-yellow: #fcd34d;
+    --status-green: #86efac;
+    --status-pink: #fbcfe8;
+    --tab-active: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+    min-height: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+    transition: background 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+}
+
+button, input, textarea, select {
+    font: inherit;
+}
+
+img {
+   max-width: 100%;
+   display: block;
+}
+
+.App {
+    display: flex;
+    min-height: 100vh;
+    background: var(--page-bg);
+}
+
+.App.auth-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.App.app-layout {
+    display: block;
+    width: 100%;
+}
+
+.NavBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 46px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(18px);
+    animation: fadeIn 0.4s ease;
+}
+
+.brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.brand-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%);
+    color: white;
+    box-shadow: 0 10px 18px rgba(37, 99, 235, 0.2);
+    font-size: 0.9rem;
+}
+
+.brand-name {
+    font-size: 1.55rem;
+    color: var(--primary);
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.navig {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 10px 14px;
+    box-shadow: 0 12px 22px rgba(0,0,0,0.03);
+    white-space: nowrap;
+}
+
+.nav-link,
+.theme-toggle,
+.logout-btn {
+    border: none;
+    background: transparent;
+    color: var(--text);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.nav-link.active {
+    background: var(--tab-active);
+    color: #fff;
+    box-shadow: 0 12px 20px rgba(37, 99, 235, 0.2);
+}
+
+.theme-toggle {
+    background: #263141;
+    color: #fff;
+}
+
+.logout-btn {
+    background: #dc2626;
+    border-color: rgba(220, 38, 38, 0.35);
+    color: #fff;
+    box-shadow: 0 12px 22px rgba(220, 38, 38, 0.18);
+}
+
+.logout-btn:hover {
+    background: #b91c1c;
+    color: #fff;
+}
+
+.App.app-layout {
+    display: block;
+    width: 100%;
+}
+
+.home {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    animation: fadeIn 0.45s ease;
+}
+
+.home-shell {
+    display: grid;
+    gap: 26px;
+}
+
+.profile-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 22px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 25px var(--shadow);
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.profile-avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%);
+    border: 3px solid rgba(255,255,255,0.7);
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    color: white;
+    box-shadow: 0 12px 22px rgba(37, 99, 235, 0.25);
+    overflow: hidden;
+}
+
+.profile-avatar img,
+.profile-image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.profile-name {
+    font-size: clamp(1.75rem, 2vw, 2.6rem);
+    line-height: 1.1;
+    color: var(--text);
+    font-weight: 700;
+}
+
+.profile-title {
+    font-size: 1.4rem;
+    color: var(--text-soft);
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.edit-profile-button {
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.18);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 11px 22px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.edit-profile-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(243, 90, 177, 0.12);
+}
+
+.summary-row {
+    display: grid;
+    grid-template-columns: 1.2fr repeat(3, minmax(160px, 1fr));
+    gap: 18px;
+    align-items: stretch;
+}
+
+.summary-card {
+    border-radius: 24px;
+    padding: 18px 20px 12px;
+    min-height: 128px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 12px 25px var(--shadow);
+}
+
+.summary-card.total {
+    background: rgba(148, 163, 184, 0.08);
+}
+
+.summary-card.blue { background: rgba(141, 203, 255, 0.22); }
+.summary-card.yellow { background: rgba(246, 208, 107, 0.2); }
+.summary-card.green { background: rgba(126, 224, 181, 0.2); }
+.summary-card.applied { background: rgba(52, 211, 153, 0.12); }
+.summary-card.interview { background: rgba(251, 191, 36, 0.12); }
+.summary-card.offer { background: rgba(96, 165, 250, 0.12); }
+.summary-card.declined { background: rgba(239, 68, 68, 0.12); }
+.summary-card.pending { background: rgba(251, 191, 36, 0.12); }
+
+.summary-label {
+    font-size: 1.1rem;
+    color: var(--text-soft);
+    font-weight: 600;
+}
+
+.summary-number {
+    font-size: clamp(2.3rem, 3vw, 4rem);
+    line-height: 1;
+    font-weight: 700;
+    color: var(--primary);
+    margin-top: 16px;
+}
+
+.summary-card.blue .summary-number { color: #5daff3; }
+.summary-card.yellow .summary-number { color: #d4a329; }
+.summary-card.green .summary-number { color: #4fbb7d; }
+
+.applications-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: 10px;
+    padding-top: 8px;
+}
+
+.section-title {
+    font-size: clamp(2rem, 2.5vw, 2.5rem);
+    color: var(--text);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+
+.add-application-button {
+    border-radius: 999px;
+    background: linear-gradient(135deg, #f35ab1 0%, #d43b91 100%);
+    color: white;
+    padding: 14px 22px;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 12px 26px rgba(243, 90, 177, 0.18);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.applications-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(260px, 1fr));
+    gap: 22px;
+    margin-top: 8px;
+}
+
+.application-card {
+    border-radius: 26px;
+    padding: 18px 20px 16px;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border: 1px solid var(--border);
+    background: var(--surface-strong);
+    box-shadow: 0 12px 25px var(--shadow);
+}
+
+.app-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.app-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.03em;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+    border: 1px solid transparent;
+}
+
+.status-pill.applied {
+    background: rgba(52, 211, 153, 0.18);
+    border-color: rgba(52, 211, 153, 0.35);
+    color: #15803d;
+}
+
+.status-pill.interview {
+    background: rgba(245, 158, 11, 0.18);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: #b45309;
+}
+
+.status-pill.offer {
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #1d4ed8;
+}
+
+.status-pill.declined {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #b91c1c;
+}
+
+.status-pill.pending {
+    background: rgba(251, 191, 36, 0.2);
+    border-color: rgba(217, 119, 6, 0.35);
+    color: #a16207;
+}
+
+.app-meta {
+    display: grid;
+    gap: 10px;
+    color: var(--text-soft);
+    font-size: 1.06rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.app-summary {
+    margin-top: auto;
+    color: var(--text-soft);
+    font-size: 1.02rem;
+    line-height: 1.45;
+}
+
+@media (max-width: 1100px) {
+    .summary-row {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+    }
+
+    .applications-grid {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+
+    .NavBar {
+        padding-left: 20px;
+        padding-right: 20px;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .navig {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .profile-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 980px) {
+    .summary-row { grid-template-columns: 1fr 1fr; }
+    .applications-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    .charts { grid-template-columns: 1fr; }
+    .NavBar { padding-left: 20px; padding-right: 20px; gap: 16px; flex-wrap: wrap; }
+    .navig { flex-wrap: wrap; justify-content: center; }
+    .profile-banner { flex-direction: column; align-items: flex-start; }
+    .auth-card { width: min(680px, 100%); }
+    .login-container form,
+    .signup-container form { width: min(760px, 92vw); }
+}
+
+@media (max-width: 760px) {
+    .home {
+        padding: 20px 12px 36px;
+    }
+
+    .NavBar {
+        justify-content: center;
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    .brand-wrap {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .navig {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .summary-row,
+    .applications-grid,
+    .charts {
+        grid-template-columns: 1fr;
+    }
+
+    .applications-header,
+    .profile-banner,
+    .app-top-row,
+    .ViewApplication .app-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .add-application-button,
+    .edit-profile-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .auth-page,
+    .login-container,
+    .signup-container {
+        padding: 16px;
+        min-height: 100vh;
+    }
+
+    .auth-card,
+    .login-container form,
+    .signup-container form {
+        width: min(100%, 92vw);
+        padding: 22px 18px;
+        margin: 0 auto;
+    }
+
+    .login-container .login-action-row,
+    .signup-container .signup-action-row,
+    .auth-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .login-container .login-action-row button,
+    .signup-container .signup-action-row button,
+    .login-container .auth-actions button,
+    .signup-container .auth-actions button {
+        width: 100%;
+        flex-basis: auto;
+    }
+
+    .AddApplication,
+    .EditProfile,
+    .ViewApplication,
+    .ApplicationDetails {
+        width: min(100%, calc(100% - 18px));
+        margin: 18px auto;
+        padding: 20px 16px;
+    }
+
+    .AddApplication form,
+    .EditProfile form {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-image-preview-wrap {
+        grid-column: 1;
+    }
+
+    .ViewApplication .meta,
+    .detail-row {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-value {
+        text-align: left;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 700px) {
+    .App { min-height: 100vh; }
+    .NavBar { justify-content: center; }
+    .navig { width: 100%; flex-wrap: wrap; justify-content: center; }
+    .brand-wrap { width: 100%; justify-content: center; }
+    .brand-name { font-size: 1.15rem; }
+    .home { padding: 20px 12px 36px; }
+    .summary-row { grid-template-columns: 1fr; }
+    .applications-grid { grid-template-columns: 1fr; }
+    .applications-header { flex-direction: column; align-items: flex-start; }
+    .profile-banner { flex-direction: column; align-items: flex-start; }
+    .profile-info { width: 100%; }
+    .edit-profile-button, .add-application-button { width: 100%; }
+    .app-top-row, .ViewApplication .app-row { flex-direction: column; align-items: flex-start; }
+    .auth-page,
+    .login-container,
+    .signup-container { padding: 16px; }
+    .auth-card,
+    .login-container form,
+    .signup-container form { width: 100%; padding: 22px 18px; }
+    .login-container .login-action-row,
+    .signup-container .signup-action-row,
+    .auth-actions { grid-template-columns: 1fr; display: grid; }
+    .login-container .login-action-row button,
+    .signup-container .signup-action-row button,
+    .login-container .auth-actions button,
+    .signup-container .auth-actions button { width: 100%; flex-basis: auto; }
+    .AddApplication,
+    .EditProfile,
+    .ViewApplication,
+    .ApplicationDetails { width: min(100%, calc(100% - 18px)); margin: 18px auto; padding: 20px 16px; }
+    .AddApplication form,
+    .EditProfile form { grid-template-columns: 1fr; }
+    .profile-image-preview-wrap { grid-column: 1; }
+    .ViewApplication .meta { grid-template-columns: 1fr; }
+    .detail-row { flex-direction: column; align-items: flex-start; }
+    .detail-value { text-align: left; max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+    .NavBar { padding-left: 12px; padding-right: 12px; }
+    .navig { gap: 6px; padding: 8px 10px; }
+    .nav-link,
+    .theme-toggle,
+    .logout-btn { padding: 8px 10px; font-size: 0.78rem; }
+    .brand-wrap { gap: 8px; }
+    .brand-icon { width: 28px; height: 28px; }
+    .profile-name { font-size: 1.45rem; }
+    .profile-title { font-size: 1.05rem; }
+    .summary-card { min-height: 110px; }
+    .summary-number { font-size: 2.2rem; }
+}
+
+/* ── Premium styling for all non-homepage screens ── */
+.page-action-row,
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.page-action-row button,
+.action-buttons button,
+.go-home-btn button,
+.go-back button,
+.delete-btn button,
+.edit-btn button,
+.extract-section button,
+.auth-card button,
+.login-container button,
+.signup-container button,
+.AddApplication button,
+.EditProfile button,
+.ViewApplication button {
+    border: none;
+    cursor: pointer;
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
+    color: #fff;
+    box-shadow: 0 12px 22px rgba(37, 99, 235, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.page-action-row button:hover,
+.action-buttons button:hover,
+.go-home-btn button:hover,
+.go-back button:hover,
+.delete-btn button:hover,
+.edit-btn button:hover,
+.extract-section button:hover,
+.auth-card button:hover,
+.login-container button:hover,
+.signup-container button:hover,
+.AddApplication button:hover,
+.EditProfile button:hover,
+.ViewApplication button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 26px rgba(37, 99, 235, 0.22);
+}
+
+.AddApplication,
+.EditProfileContainer,
+.EditProfile,
+.ViewApplication,
+.ApplicationDetails,
+.auth-page,
+.login-container,
+.signup-container {
+    animation: fadeIn 0.45s ease;
+}
+
+.AddApplication,
+.EditProfile,
+.ViewApplication,
+.ApplicationDetails {
+    width: min(1100px, calc(100% - 28px));
+    margin: 30px auto;
+    padding: 28px;
+    border-radius: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 18px 36px var(--shadow);
+}
+
+.AddApplication h2,
+.EditProfile h2,
+.ViewApplication h2,
+.ApplicationDetails h2,
+.login-container h2,
+.signup-container h2,
+.auth-header h2 {
+    margin-bottom: 18px;
+    color: var(--text);
+    font-size: clamp(2rem, 2.4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.AddApplication form,
+.EditProfile form,
+.ViewApplication form {
+    display: grid;
+    gap: 16px;
+}
+
+.AddApplication form,
+.EditProfile form {
+    grid-template-columns: minmax(150px, 180px) minmax(0, 1fr);
+    align-items: center;
+}
+
+.AddApplication label,
+.EditProfile label,
+.ViewApplication label,
+.detail-label,
+.auth-card label,
+.file-input-label {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 0.96rem;
+}
+
+.AddApplication input,
+.EditProfile input,
+.ViewApplication input,
+.ViewApplication select,
+.AddApplication select,
+.AddApplication textarea,
+.EditProfile textarea,
+.login-container input,
+.signup-container input,
+.auth-card input {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 13px 14px;
+    color: var(--text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.AddApplication textarea,
+.EditProfile textarea {
+    min-height: 120px;
+    resize: vertical;
+    width: 100%;
+}
+
+.AddApplication input:focus,
+.EditProfile input:focus,
+.ViewApplication input:focus,
+.AddApplication textarea:focus,
+.EditProfile textarea:focus,
+.login-container input:focus,
+.signup-container input:focus,
+.auth-card input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    outline: none;
+}
+
+.AddApplication button,
+.EditProfile button,
+.ViewApplication button,
+.ApplicationDetails button,
+.extract-section button {
+    justify-self: start;
+}
+
+.extract-section {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(148, 163, 184, 0.04);
+}
+
+.extract-section label {
+    grid-column: 1 / -1;
+}
+
+.extract-section button {
+    padding: 12px 16px;
+}
+
+.ViewApplication {
+    display: grid;
+    gap: 18px;
+    width: min(1100px, calc(100% - 18px));
+    margin: 30px auto;
+    padding: 28px;
+    border-radius: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 18px 36px var(--shadow);
+    box-sizing: border-box;
+}
+
+.ViewApplication > label,
+.ViewApplication > input,
+.ViewApplication > select,
+.ViewApplication > p,
+.ViewApplication .application-list,
+.ViewApplication .application-list > * {
+    max-width: 100%;
+}
+
+.ViewApplication input,
+.ViewApplication select,
+.ViewApplication textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.ViewApplication .application-list {
+    overflow-wrap: anywhere;
+}
+
+.ViewApplication .meta p,
+.ViewApplication .application-list p {
+    overflow-wrap: anywhere;
+}
+
+.ViewApplication .app-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ViewApplication .title {
+    margin: 0;
+    color: var(--text);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.ViewApplication .meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+    gap: 12px;
+    color: var(--text-soft);
+    font-size: 1.06rem;
+}
+
+.ViewApplication .detail-link {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 4px;
+}
+
+.ViewApplication .detail-link:hover {
+    text-decoration: underline;
+}
+
+.ViewApplication .status-pill {
+    align-self: center;
+}
+
+.ApplicationDetails .detail-card {
+    display: grid;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--surface);
+    padding: 18px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-value {
+    color: var(--text);
+    text-align: right;
+    max-width: 60%;
+    word-break: break-word;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+}
+
+.status-badge.status-Applied {
+    background: rgba(52, 211, 153, 0.18);
+    border-color: rgba(52, 211, 153, 0.35);
+    color: #15803d;
+}
+
+.status-badge.status-Interview {
+    background: rgba(245, 158, 11, 0.18);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: #b45309;
+}
+
+.status-badge.status-Offer {
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #1d4ed8;
+}
+
+.status-badge.status-Declined {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #b91c1c;
+}
+
+.status-badge.status-Pending {
+    background: rgba(251, 191, 36, 0.2);
+    border-color: rgba(217, 119, 6, 0.35);
+    color: #a16207;
+}
+
+.profile-image-preview-wrap {
+    grid-column: 2;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: rgba(148, 163, 184, 0.12);
+    box-shadow: 0 12px 20px var(--shadow);
+}
+
+.profile-image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.auth-page {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 24px;
+}
+
+.auth-card {
+    width: min(760px, 92vw);
+    padding: 30px;
+    border-radius: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 18px 32px var(--shadow);
+}
+
+.auth-fields {
+    display: grid;
+    gap: 14px;
+}
+
+.auth-actions {
+    display: grid;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.secondary {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+    color: var(--text-soft);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.login-container,
+.signup-container {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.login-container form,
+.signup-container form {
+    width: min(980px, 88vw);
+    display: grid;
+    gap: 16px;
+    padding: 32px 36px;
+    border-radius: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 18px 36px var(--shadow);
+    margin: auto;
+}
+
+.login-container .login-action-row,
+.signup-container .signup-action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.login-container .login-action-row button,
+.signup-container .signup-action-row button,
+.login-container .auth-actions button,
+.signup-container .auth-actions button {
+    flex: 1 1 180px;
+}
+
+.login-container .error,
+.signup-container .error,
+.login-container .success,
+.signup-container .success,
+.ViewApplication p,
+.ApplicationDetails .error,
+.EditProfile .error,
+.AddApplication .error {
+    color: var(--text);
+}
+
+.error {
+    color: #dc2626;
+}
+
+.success {
+    color: #15803d;
+}
+
+@media (max-width: 760px) {
+    .ViewApplication {
+        width: min(100%, calc(100% - 18px));
+        padding: 20px 16px;
+        margin: 18px auto;
+    }
+
+    .ViewApplication .meta {
+        grid-template-columns: 1fr;
+    }
+
+    .ViewApplication .app-row {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .ViewApplication .title {
+        font-size: 1.2rem;
+    }
+
+    .ViewApplication .detail-link {
+        display: inline-block;
+        width: 100%;
+    }
+}
