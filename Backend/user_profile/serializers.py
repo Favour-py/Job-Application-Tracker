@@ -3,7 +3,14 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        if not obj.image:
+            return None
+        url = obj.image.url
+        return url if url.startswith('http') else f"https://res.cloudinary.com{url}"
+
     class Meta:
             model = UserProfile
             fields = '__all__'
