@@ -8,8 +8,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         if not obj.image:
             return None
-        url = obj.image.url
-        return url if url.startswith('http') else f"https://res.cloudinary.com{url}"
+        return obj.image.url
 
     class Meta:
             model = UserProfile
