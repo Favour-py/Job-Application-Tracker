@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
+import { API_URL } from "./config";
 import {
     PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
     BarChart, Bar, XAxis, YAxis, CartesianGrid
@@ -70,7 +71,9 @@ const Home = ({ applications, profile }) => {
                         <div className="profile-avatar">
                             {profile?.image ? (
                                 <img
-                                    src={typeof profile.image === "string" ? profile.image : URL.createObjectURL(profile.image)}
+                                    src={typeof profile.image === "string"
+                                        ? (profile.image.startsWith('http') ? profile.image : `${API_URL}${profile.image}`)
+                                        : URL.createObjectURL(profile.image)}
                                     alt={profile?.name || "Profile"}
                                 />
                             ) : (

@@ -119,13 +119,14 @@ class LoginView(APIView):
                 'access': access
             })
 
+            is_production = not settings.DEBUG
             response.set_cookie(
                 key='refresh_token',
                 value=refresh,
                 httponly=True,
-                samesite='Lax',
+                samesite='None' if is_production else 'Lax',
                 path='/',
-                secure=False,
+                secure=is_production,
             )
 
             return response
@@ -170,5 +171,6 @@ class LogoutView(APIView):
             except TokenError:
                 pass
         response = Response({"message": "Logged out successfully."})
-        response.delete_cookie("refresh_token", samesite="Lax", path="/")
+        is_production = not settings.DEBUG
+        response.delete_cookie("refresh_token", samesite="None" if is_production else "Lax", path="/")
         return response
