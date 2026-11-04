@@ -5,7 +5,7 @@ const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
     const [isDark, setIsDark] = useState(() => {
         const savedTheme = localStorage.getItem("job-app-theme");
-        return savedTheme ? savedTheme === "dark" : false;
+        return savedTheme ? savedTheme === "dark" : true;
     });
 
     useEffect(() => {
