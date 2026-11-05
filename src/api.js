@@ -1,11 +1,15 @@
 export const fetchWithAuth = async (url, options, accessToken, setAccessToken) => {
+    const isFormData = options.body instanceof FormData;
+    const headers = {
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        "Authorization": `Bearer ${accessToken}`,
+        ...( !isFormData && options.headers),
+    };
+
     const response = await fetch(url, {
         ...options,
         credentials: "include",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            ...options.headers
-        }
+        headers
     });
 
     if (response.status === 401) {
@@ -28,8 +32,8 @@ export const fetchWithAuth = async (url, options, accessToken, setAccessToken) =
             ...options,
             credentials: "include",
             headers: {
-                ...options.headers,
-                "Authorization": `Bearer ${refreshData.access}`
+                ...(isFormData ? {} : { "Content-Type": "application/json" }),
+                "Authorization": `Bearer ${refreshData.access}`,
             }
         });
 
@@ -40,7 +44,6 @@ export const fetchWithAuth = async (url, options, accessToken, setAccessToken) =
         }
 
         return retryResponse.status === 204 ? null : retryResponse.json();
-
     }
 
     if (!response.ok) {

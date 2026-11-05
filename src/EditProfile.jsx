@@ -53,7 +53,6 @@ const EditProfile = ({profile, setProfile}) => {
                 {
                     method,
                     body: formData,
-                    headers: {}
                 },
                 accessToken,
                 setAccessToken
