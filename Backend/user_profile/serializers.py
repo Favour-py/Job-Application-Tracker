@@ -1,19 +1,35 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+import cloudinary.uploader
 from .models import UserProfile
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(write_only=True, required=False)
     image_url = serializers.SerializerMethodField()
 
     def get_image_url(self, obj):
-        if not obj.image:
-            return None
-        return obj.image.url
+        return obj.image or None
+
+    def update(self, instance, validated_data):
+        image_file = validated_data.pop('image', None)
+        if image_file:
+            result = cloudinary.uploader.upload(image_file, folder='profile_images')
+            instance.image = result['secure_url']
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        image_file = validated_data.pop('image', None)
+        instance = super().create(validated_data)
+        if image_file:
+            result = cloudinary.uploader.upload(image_file, folder='profile_images')
+            instance.image = result['secure_url']
+            instance.save()
+        return instance
 
     class Meta:
-            model = UserProfile
-            fields = '__all__'
-            read_only_fields = ['user']
+        model = UserProfile
+        fields = ['id', 'user', 'name', 'title', 'image', 'image_url']
+        read_only_fields = ['user', 'image_url']
             
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
