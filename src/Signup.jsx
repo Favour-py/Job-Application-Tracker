@@ -10,6 +10,7 @@ const Signup = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -17,6 +18,7 @@ const Signup = () => {
         e.preventDefault();
         setErrors({});
         setSuccessMessage("");
+        setLoading(true);
 
         fetch(`${API_URL}/api/register/`, {
             method: "POST",
@@ -44,7 +46,8 @@ const Signup = () => {
         })
         .catch(error => {
             setErrors(error);
-        });
+        })
+        .finally(() => setLoading(false));
     };
 
     return (
@@ -85,7 +88,9 @@ const Signup = () => {
                 </div>
 
                 <div className="auth-actions">
-                    <button type="submit">Sign Up</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Signing up..." : "Sign Up"}
+                    </button>
                     <p>Already have an account? <a href="/Login" className="login-link">Log In</a></p>
                     <div className="divider">Or</div>
                     <button type="button" className="secondary">Sign up with Google</button>

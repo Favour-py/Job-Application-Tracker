@@ -18,6 +18,7 @@ const EditProfile = ({profile, setProfile}) => {
     const navigate = useNavigate();
     const { accessToken, setAccessToken } = useContext(AuthContext);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     
     useEffect(() => {
         setName(profile.name);
@@ -33,6 +34,7 @@ const EditProfile = ({profile, setProfile}) => {
             return;
         }
 
+        setLoading(true);
         const formData = new FormData();
         formData.append("name", name);
         formData.append("title", title);
@@ -60,6 +62,8 @@ const EditProfile = ({profile, setProfile}) => {
             navigate('/');
         } catch (err) {
             setError("Failed to save profile. Please try again.");
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -122,8 +126,8 @@ const EditProfile = ({profile, setProfile}) => {
                         </div>
                     )}
 
-                    <button type="submit">
-                        {profile.id > 0 ? "Update Profile" : "Create Profile"}
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Saving..." : (profile.id ? "Update Profile" : "Create Profile")}
                     </button>
                 </form>
                 {error && <p className="error">{error}</p>}

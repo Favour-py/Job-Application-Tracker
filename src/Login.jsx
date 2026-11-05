@@ -9,11 +9,13 @@ const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const { setAccessToken } = useContext(AuthContext);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
 
         fetch(`${API_URL}/api/login/`, {
             method: "POST",
@@ -39,7 +41,8 @@ const Login = () => {
         })
         .catch(err => {
             setError(err.detail || "Login failed. Please try again.");
-        });
+        })
+        .finally(() => setLoading(false));
     };
 
     return (
@@ -62,7 +65,9 @@ const Login = () => {
                 />
 
                 <div className="login-action-row">
-                    <button type="submit">Login</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
                     <button type="button" className="secondary" onClick={() => navigate("/Signup")}>Sign Up</button>
                 </div>
 

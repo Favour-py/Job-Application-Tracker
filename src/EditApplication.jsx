@@ -11,8 +11,7 @@ const EditApplication = ({ applications, setApplications }) => {
     const { accessToken, setAccessToken } = useContext(AuthContext);
     const navigate = useNavigate();
     const [error, setError] = useState("");
-
-    const [title, setTitle] = useState(application.title);
+    const [loading, setLoading] = useState(false);, setTitle] = useState(application.title);
     const [company, setCompany] = useState(application.company);
     const [location, setLocation] = useState(application.location);
     const [status, setStatus] = useState(application.status);
@@ -24,6 +23,7 @@ const EditApplication = ({ applications, setApplications }) => {
     const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
     const updatedApplication = {
         title, company, location, status,
@@ -49,6 +49,8 @@ const EditApplication = ({ applications, setApplications }) => {
     navigate(`/ApplicationDetails/${application.id}`);
     } catch (err) {
         setError("Failed to update application. Please try again.");
+    } finally {
+        setLoading(false);
     }
 };
 
@@ -124,7 +126,9 @@ const EditApplication = ({ applications, setApplications }) => {
                         onChange={(e) => setNotes(e.target.value)}
                     />
                 </div>
-                <button type="submit">Save Changes</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? "Saving..." : "Save Changes"}
+                </button>
             </form>
             {error && <p className="error">{error}</p>}
         </div>
