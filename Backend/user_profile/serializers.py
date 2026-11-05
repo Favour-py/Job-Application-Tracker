@@ -13,8 +13,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         image_file = validated_data.pop('image', None)
         if image_file:
-            import cloudinary
-            print("CLOUDINARY CONFIG:", cloudinary.config().cloud_name, cloudinary.config().api_key)
             result = cloudinary.uploader.upload(image_file, folder='profile_images')
             instance.image = result['secure_url']
         return super().update(instance, validated_data)
