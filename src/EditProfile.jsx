@@ -4,17 +4,16 @@ import { AuthContext } from "./context/AuthContext";
 import { fetchWithAuth } from "./api";
 import { API_URL } from "./config";
 
-const getImageSrc = (image) => {
-    if (!image) return null;
+const getImageSrc = (image, image_url) => {
     if (image instanceof File) return URL.createObjectURL(image);
-    return image.startsWith('http') ? image : `${API_URL}${image}`;
+    return image_url || null;
 };
 
 const EditProfile = ({profile, setProfile}) => {
 
     const [name, setName] = useState(profile.name);
     const [title, setTitle] = useState(profile.title);
-    const [image, setImage] = useState(profile.image);
+    const [image, setImage] = useState(null);
 
     const navigate = useNavigate();
     const { accessToken, setAccessToken } = useContext(AuthContext);
@@ -23,7 +22,7 @@ const EditProfile = ({profile, setProfile}) => {
     useEffect(() => {
         setName(profile.name);
         setTitle(profile.title);
-        setImage(profile.image);
+        setImage(null);
     }, [profile])
 
     const handleSubmit = async (e) => {
@@ -113,10 +112,10 @@ const EditProfile = ({profile, setProfile}) => {
                         }}
                     />
 
-                    {image && (
+                    {(image || profile.image_url) && (
                         <div className="profile-image-preview-wrap">
                             <img
-                                src={getImageSrc(image)}
+                                src={getImageSrc(image, profile.image_url)}
                                 alt="Profile preview"
                                 className="profile-image-preview"
                             />

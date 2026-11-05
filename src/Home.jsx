@@ -69,11 +69,9 @@ const Home = ({ applications, profile }) => {
                 <header className="profile-banner">
                     <div className="profile-info">
                         <div className="profile-avatar">
-                            {profile?.image ? (
+                            {profile?.image_url ? (
                                 <img
-                                    src={typeof profile.image === "string"
-                                        ? (profile.image.startsWith('http') ? profile.image : `${API_URL}${profile.image}`)
-                                        : URL.createObjectURL(profile.image)}
+                                    src={profile.image_url}
                                     alt={profile?.name || "Profile"}
                                 />
                             ) : (

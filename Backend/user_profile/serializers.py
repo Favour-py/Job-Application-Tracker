@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
 
-    def get_image(self, obj):
+    def get_image_url(self, obj):
         if not obj.image:
             return None
         return obj.image.url
