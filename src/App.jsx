@@ -46,6 +46,7 @@ function AppShell() {
   }, [accessToken]);
 
   const [profile, setProfile] = useState({
+    id: null,
     name: "",
     title: "",
     image: ""

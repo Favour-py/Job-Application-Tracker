@@ -4,6 +4,12 @@ import { AuthContext } from "./context/AuthContext";
 import { fetchWithAuth } from "./api";
 import { API_URL } from "./config";
 
+const getImageSrc = (image) => {
+    if (!image) return null;
+    if (image instanceof File) return URL.createObjectURL(image);
+    return image.startsWith('http') ? image : `${API_URL}${image}`;
+};
+
 const EditProfile = ({profile, setProfile}) => {
 
     const [name, setName] = useState(profile.name);
@@ -36,10 +42,10 @@ const EditProfile = ({profile, setProfile}) => {
             formData.append("image", image);
         }
 
-        const url = profile.id > 0
+        const url = profile.id
             ? `${API_URL}/api/profiles/${profile.id}/`
             : `${API_URL}/api/profiles/`;
-        const method = profile.id > 0 ? 'PATCH' : 'POST';
+        const method = profile.id ? 'PATCH' : 'POST';
 
         try {
             const data = await fetchWithAuth(
@@ -83,7 +89,7 @@ const EditProfile = ({profile, setProfile}) => {
         <div className="EditProfileContainer">
             <div className="EditProfile">
                 <div className="go-home-btn"><button onClick={() => navigate('/')}>Go Home</button></div>
-                <h2>{profile.id > 0 ? "Set up your Profile" : "Create your Profile"}</h2>
+                <h2>{profile.id ? "Set up your Profile" : "Create your Profile"}</h2>
                 
                 <form onSubmit={handleSubmit}>
                     <label>Name: </label>
@@ -111,7 +117,7 @@ const EditProfile = ({profile, setProfile}) => {
                     {image && (
                         <div className="profile-image-preview-wrap">
                             <img
-                                src={typeof image === "string" ? image : URL.createObjectURL(image)}
+                                src={getImageSrc(image)}
                                 alt="Profile preview"
                                 className="profile-image-preview"
                             />
@@ -123,7 +129,7 @@ const EditProfile = ({profile, setProfile}) => {
                     </button>
                 </form>
                 {error && <p className="error">{error}</p>}
-                {profile.id > 0 && (
+                {profile.id && (
                     <button onClick={handleDelete}>Delete Profile</button>
                 )}
             </div>
