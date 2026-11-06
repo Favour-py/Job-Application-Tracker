@@ -624,6 +624,25 @@ img {
         grid-template-columns: 1fr;
     }
 
+    .profile-image-preview-wrap {
+        grid-column: 1;
+    }
+
+    .ViewApplication .meta {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-value {
+        text-align: left;
+        max-width: 100%;
+    }
+}
+
 @media (max-width: 700px) {
     .App { min-height: 100vh; }
     .NavBar { justify-content: center; }
@@ -691,6 +710,7 @@ img {
 .action-buttons button,
 .go-home-btn button,
 .go-back button,
+.back-btn button,
 .delete-btn button,
 .edit-btn button,
 .extract-section button,
@@ -699,6 +719,7 @@ img {
 .signup-container button,
 .AddApplication button,
 .EditProfile button,
+.EditApplication button,
 .ViewApplication button {
     border: none;
     cursor: pointer;
@@ -716,6 +737,7 @@ img {
 .action-buttons button:hover,
 .go-home-btn button:hover,
 .go-back button:hover,
+.back-btn button:hover,
 .delete-btn button:hover,
 .edit-btn button:hover,
 .extract-section button:hover,
@@ -724,6 +746,7 @@ img {
 .signup-container button:hover,
 .AddApplication button:hover,
 .EditProfile button:hover,
+.EditApplication button:hover,
 .ViewApplication button:hover {
     transform: translateY(-1px);
     box-shadow: 0 16px 26px rgba(37, 99, 235, 0.22);
@@ -732,6 +755,7 @@ img {
 .AddApplication,
 .EditProfileContainer,
 .EditProfile,
+.EditApplication,
 .ViewApplication,
 .ApplicationDetails,
 .auth-page,
