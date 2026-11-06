@@ -107,9 +107,19 @@ class ExtractJobView(APIView):
 
         try:
             client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
-            ai_response = client.models.generate_content(model='gemini-1.5-flash', contents=prompt)
-            raw = ai_response.text.strip().strip('```json').strip('```').strip()
+            ai_response = client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt
+            )
+            raw = ai_response.text.strip()
+            if raw.startswith('```'):
+                raw = raw.split('```')[1]
+                if raw.startswith('json'):
+                    raw = raw[4:]
+            raw = raw.strip()
             data = json.loads(raw)
+        except json.JSONDecodeError as e:
+            return Response({'error': f'Failed to parse AI response: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             return Response({'error': f'AI extraction failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
