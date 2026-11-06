@@ -10,3 +10,5 @@ gunicorn==21.2.0
 requests==2.32.3
 beautifulsoup4==4.12.3
 google-genai==2.33.0
+cloudinary==1.41.0
+django-cloudinary-storage==0.3.0
