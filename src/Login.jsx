@@ -75,7 +75,7 @@ const Login = () => {
 
                 <button type="button" className="secondary" onClick={() => navigate("/forgot-password")}>Forgot Password?</button>
 
-                {error && <p className="error">{error}</p>}
+                {error && <p className="toast toast-error">{error}</p>}
             </form>
         </div>
     );

@@ -130,7 +130,7 @@ const EditProfile = ({profile, setProfile}) => {
                         {loading ? "Saving..." : (profile.id ? "Update Profile" : "Create Profile")}
                     </button>
                 </form>
-                {error && <p className="error">{error}</p>}
+                {error && <p className="toast toast-error">{error}</p>}
                 {profile.id && (
                     <button onClick={handleDelete}>Delete Profile</button>
                 )}

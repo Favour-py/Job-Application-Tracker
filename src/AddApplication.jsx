@@ -17,7 +17,7 @@ const AddApplication = ({setApplications}) => {
     const [extractUrl, setExtractUrl] = useState("");
     const [extracting, setExtracting] = useState(false);
     const [extractError, setExtractError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
     const { accessToken, setAccessToken } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -53,7 +53,7 @@ const AddApplication = ({setApplications}) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-        setLoading(true);
+        setSubmitting(true);
         const newApplication = { title, company, location, status, application_date: applicationDate, url: jobUrl, notes, job_description: jobDescription };
         try {
             const createdApplication = await fetchWithAuth(
@@ -71,7 +71,7 @@ const AddApplication = ({setApplications}) => {
         } catch (err) {
             setError("Failed to add application. Please try again.");
         } finally {
-            setLoading(false);
+            setSubmitting(false);
         }
     };
 
@@ -86,7 +86,7 @@ const AddApplication = ({setApplications}) => {
                 <button type="button" onClick={handleExtract} disabled={extracting}>
                     {extracting ? "Extracting..." : "Extract with AI"}
                 </button>
-                {extractError && <p className="error">{extractError}</p>}
+                {extractError && <p className="toast toast-error">{extractError}</p>}
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -112,11 +112,11 @@ const AddApplication = ({setApplications}) => {
                 <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} />
                 <label>Job Description: </label>
                 <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)} />
-                <button type="submit" disabled={loading}>
-                    {loading ? "Adding..." : "Add Application"}
+                <button type="submit" disabled={submitting}>
+                    {submitting ? "Adding..." : "Add Application"}
                 </button>
             </form>
-            {error && <p className="error">{error}</p>}
+            {error && <p className="toast toast-error">{error}</p>}
         </div>
      );
 }

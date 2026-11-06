@@ -9,6 +9,7 @@ const ApplicationDetails = ({applications, setApplications}) => {
     const navigate = useNavigate();
     const { accessToken, setAccessToken } = useContext(AuthContext);
     const [error, setError] = useState("");
+    const [deleting, setDeleting] = useState(false);
 
     const { id } = useParams()
     const application = applications.find(application => application.id === Number(id)
@@ -20,6 +21,7 @@ const ApplicationDetails = ({applications, setApplications}) => {
     const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this application?")) return;
     setError("");
+    setDeleting(true);
     try {
         await fetchWithAuth(
             `${API_URL}/api/applications/${application.id}/`,
@@ -31,6 +33,8 @@ const ApplicationDetails = ({applications, setApplications}) => {
         navigate('/ViewApplication');
     } catch (err) {
         setError("Failed to delete application. Please try again.");
+    } finally {
+        setDeleting(false);
     }
 };
 
@@ -41,7 +45,7 @@ const ApplicationDetails = ({applications, setApplications}) => {
                 <div className="go-home-btn"><button onClick={() => navigate('/')}>Go Home</button></div>
                 <div className="go-back"><button onClick={() => navigate(-1)}>Go Back</button></div>
                 <div className="edit-btn"><button onClick={() => navigate(`/ApplicationDetails/${application.id}/edit`)}>Edit Application</button></div>
-                <div className="delete-btn"><button onClick={handleDelete}>Delete</button></div>
+                <div className="delete-btn"><button onClick={handleDelete} disabled={deleting}>{deleting ? "Deleting..." : "Delete"}</button></div>
             </div>
             <h2>Application Details</h2>
             <div className="detail-card">
@@ -84,7 +88,7 @@ const ApplicationDetails = ({applications, setApplications}) => {
                     </div>
                 )}
             </div>
-            {error && <p className="error">{error}</p>}
+            {error && <p className="toast toast-error">{error}</p>}
         </div>
      );
 }

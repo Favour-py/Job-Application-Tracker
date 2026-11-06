@@ -181,9 +181,9 @@ const Home = ({ applications, profile }) => {
                                     </div>
                                 </div>
 
-                                <p className="app-summary">
-                                    {app.notes || "Interesting opportunity with a growing team."}
-                                </p>
+                                                {app.notes && (
+                                    <p className="app-summary">{app.notes}</p>
+                                )}
                             </article>
                         ))
                     ) : (

@@ -97,11 +97,11 @@ const Signup = () => {
                     <button type="button" className="secondary">Sign up with Facebook</button>
                 </div>
 
-                {successMessage && <p className="success">{successMessage}</p>}
+                {successMessage && <p className="toast toast-success">{successMessage}</p>}
                 {Object.entries(errors).map(([field, messages]) => {
                     const fieldName = field === "non_field_errors" ? "Error" : field.charAt(0).toUpperCase() + field.slice(1);
                     return messages.map((message, index) => (
-                        <p key={`${field}-${index}`} className="error">
+                        <p key={`${field}-${index}`} className="toast toast-error">
                             <strong>{fieldName}:</strong> {message}
                         </p>
                     ));
