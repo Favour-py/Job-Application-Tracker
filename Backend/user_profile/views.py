@@ -1,6 +1,11 @@
 from django.conf import settings
 import os
+import logging
 from django.shortcuts import render
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+
+logger = logging.getLogger(__name__)
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -50,9 +55,7 @@ class PasswordResetRequestView(APIView):
             uid = uid_value.decode() if isinstance(uid_value, bytes) else uid_value
             token = default_token_generator.make_token(user)
             uid_for_url = uid.rstrip('=')
-            reset_link = f"{os.getenv('FRONTEND_URL', 'http://192.168.1.122:5173')}/reset-password?uid={uid_for_url}&token={token}"
-            print("RAW RESET LINK:", reset_link)
-            print("RAW RESET LINK repr:", repr(reset_link))
+            reset_link = f"{os.getenv('FRONTEND_URL', 'http://localhost:5173')}/reset-password?uid={uid_for_url}&token={token}"
 
             try:
                 send_mail(
@@ -63,7 +66,7 @@ class PasswordResetRequestView(APIView):
                     fail_silently=False,
                 )
             except Exception as exc:
-                print(f"Password reset email failed for {email}: {exc}")
+                logger.error("Password reset email failed: %s", exc)
                 return Response({
                     'error': 'Unable to send password reset email right now. Please try again later.'
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -96,6 +99,11 @@ class PasswordResetConfirmView(APIView):
 
         if not default_token_generator.check_token(user, token):
             return Response({'error': 'Invalid or expired reset token.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            validate_password(password, user)
+        except DjangoValidationError as e:
+            return Response({'error': list(e.messages)}, status=status.HTTP_400_BAD_REQUEST)
 
         user.set_password(password)
         user.save()

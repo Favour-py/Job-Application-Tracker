@@ -10,10 +10,12 @@ from .serializers import ApplicationSerializer
 import requests
 import os
 import json
+import logging
 from bs4 import BeautifulSoup
 import google.genai as genai
+from google.genai import types
 
-# Create your views here.
+logger = logging.getLogger(__name__)
 
 
 class ApplicationViewSet(viewsets.ModelViewSet):
@@ -26,6 +28,65 @@ class ApplicationViewSet(viewsets.ModelViewSet):
         
     def get_queryset(self):
         return Application.objects.filter(user=self.request.user)
+
+
+def _extract_structured(soup):
+    for script in soup.find_all('script', type='application/ld+json'):
+        try:
+            data = json.loads(script.string)
+            if isinstance(data, list):
+                data = next((d for d in data if d.get('@type') == 'JobPosting'), {})
+            if data.get('@type') == 'JobPosting':
+                loc = data.get('jobLocation', {})
+                if isinstance(loc, list):
+                    loc = loc[0] if loc else {}
+                address = loc.get('address', {})
+                location = address.get('addressLocality') or address.get('addressRegion') or address.get('addressCountry')
+                salary_data = data.get('baseSalary', {})
+                salary = None
+                if salary_data:
+                    value = salary_data.get('value', {})
+                    min_val = value.get('minValue')
+                    max_val = value.get('maxValue')
+                    currency = salary_data.get('currency', '')
+                    if min_val and max_val:
+                        salary = f"{currency} {min_val} - {max_val}"
+                    elif min_val:
+                        salary = f"{currency} {min_val}"
+                return {
+                    'title': data.get('title'),
+                    'company': data.get('hiringOrganization', {}).get('name'),
+                    'location': location,
+                    'salary': salary,
+                    'employment_type': data.get('employmentType'),
+                    'description': data.get('description', '')[:500] if data.get('description') else None,
+                }
+        except Exception:
+            continue
+    return {}
+
+
+def _extract_with_ai(text):
+    prompt = f"""Extract job details from the text below and return ONLY a valid JSON object with these fields:
+    title, company, location, salary, employment_type, description.
+    If a field is not found, use null. Do not invent or estimate any values.
+
+    Text: {text}
+
+    Return only the JSON object, no markdown, no explanation."""
+
+    client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
+    ai_response = client.models.generate_content(
+        model='gemini-3.5-flash-lite',
+        contents=prompt,
+        config=types.GenerateContentConfig(max_output_tokens=512)
+    )
+    raw = ai_response.text.strip()
+    if raw.startswith('```'):
+        raw = raw.split('```')[1]
+        if raw.startswith('json'):
+            raw = raw[4:]
+    return json.loads(raw.strip())
 
 
 class ExtractJobView(APIView):
@@ -53,74 +114,16 @@ class ExtractJobView(APIView):
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Try JSON-LD structured data first (most job boards embed this for SEO)
-        structured = {}
-        for script in soup.find_all('script', type='application/ld+json'):
-            try:
-                data = json.loads(script.string)
-                if isinstance(data, list):
-                    data = next((d for d in data if d.get('@type') == 'JobPosting'), {})
-                if data.get('@type') == 'JobPosting':
-                    loc = data.get('jobLocation', {})
-                    if isinstance(loc, list):
-                        loc = loc[0] if loc else {}
-                    address = loc.get('address', {})
-                    location = address.get('addressLocality') or address.get('addressRegion') or address.get('addressCountry')
-                    salary_data = data.get('baseSalary', {})
-                    salary = None
-                    if salary_data:
-                        value = salary_data.get('value', {})
-                        min_val = value.get('minValue')
-                        max_val = value.get('maxValue')
-                        currency = salary_data.get('currency', '')
-                        if min_val and max_val:
-                            salary = f"{currency} {min_val} - {max_val}"
-                        elif min_val:
-                            salary = f"{currency} {min_val}"
-                    structured = {
-                        'title': data.get('title'),
-                        'company': data.get('hiringOrganization', {}).get('name'),
-                        'location': location,
-                        'salary': salary,
-                        'employment_type': data.get('employmentType'),
-                        'description': data.get('description', '')[:500] if data.get('description') else None,
-                    }
-                    break
-            except Exception:
-                continue
-
-        # If structured data found and has at least title and company, return it
+        structured = _extract_structured(soup)
         if structured.get('title') and structured.get('company'):
             return Response(structured, status=status.HTTP_200_OK)
 
-        # Fall back to Gemini extraction from page text
         for tag in soup(['script', 'style', 'nav', 'footer', 'header']):
             tag.decompose()
         text = ' '.join(soup.get_text(separator=' ').split())[:4000]
 
-        prompt = f"""
-        Extract job details from the text below and return ONLY a valid JSON object with these fields:
-        title, company, location, salary, employment_type, description.
-        If a field is not found, use null. Do not invent or estimate any values.
-
-        Text: {text}
-
-        Return only the JSON object, no markdown, no explanation.
-        """
-
         try:
-            client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
-            ai_response = client.models.generate_content(
-                model='gemini-3.5-flash-lite',
-                contents=prompt
-            )
-            raw = ai_response.text.strip()
-            if raw.startswith('```'):
-                raw = raw.split('```')[1]
-                if raw.startswith('json'):
-                    raw = raw[4:]
-            raw = raw.strip()
-            data = json.loads(raw)
+            data = _extract_with_ai(text)
         except json.JSONDecodeError as e:
             return Response({'error': f'Failed to parse AI response: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
