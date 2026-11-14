@@ -44,7 +44,11 @@ const AddApplication = ({setApplications}) => {
             if (data.description) setJobDescription(data.description);
             setJobUrl(extractUrl);
         } catch (err) {
-            setExtractError(err.message || "Failed to extract job details. Try again or fill in manually.");
+            if (err.message === 'Failed to fetch') {
+                setExtractError("Network error — could not reach the server. Please check your connection.");
+            } else {
+                setExtractError(err.message || "Failed to extract job details. Try again or fill in manually.");
+            }
         } finally {
             setExtracting(false);
         }
