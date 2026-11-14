@@ -111,7 +111,7 @@ class ExtractJobView(APIView):
         try:
             client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
             ai_response = client.models.generate_content(
-                model='gemini-2.0-flash',
+                model='gemini-3.8-flash',
                 contents=prompt
             )
             raw = ai_response.text.strip()
