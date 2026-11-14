@@ -61,8 +61,12 @@ SWAGGER_SETTINGS = {
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
+    'https://job-application-tracker-kappa-red.vercel.app',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+] + [
     origin.strip()
-    for origin in os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5173,http://127.0.0.1:5173').split(',')
+    for origin in os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
     if origin.strip()
 ]
 
