@@ -48,6 +48,9 @@ class ExtractJobView(APIView):
         except Exception as e:
             return Response({'error': f'Failed to fetch URL: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
+        if len(response.text) < 200:
+            return Response({'error': 'Page returned no content. This site may block automated access.'}, status=status.HTTP_400_BAD_REQUEST)
+
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Try JSON-LD structured data first (most job boards embed this for SEO)

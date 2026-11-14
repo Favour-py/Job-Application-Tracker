@@ -44,7 +44,7 @@ const AddApplication = ({setApplications}) => {
             if (data.description) setJobDescription(data.description);
             setJobUrl(extractUrl);
         } catch (err) {
-            setExtractError("Failed to extract job details. Try again or fill in manually.");
+            setExtractError(err.message || "Failed to extract job details. Try again or fill in manually.");
         } finally {
             setExtracting(false);
         }

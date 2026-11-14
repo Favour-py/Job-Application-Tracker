@@ -49,7 +49,7 @@ export const fetchWithAuth = async (url, options, accessToken, setAccessToken) =
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         console.error("Request failed:", response.status, errorData);
-        throw new Error("Failed to fetch data");
+        throw new Error(errorData.error || errorData.detail || "Failed to fetch data");
     }
 
     return response.status === 204 ? null : response.json();
