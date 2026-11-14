@@ -11,7 +11,7 @@ import requests
 import os
 import json
 from bs4 import BeautifulSoup
-import google.genai as genai
+import google.generativeai as genai
 
 # Create your views here.
 
@@ -109,11 +109,9 @@ class ExtractJobView(APIView):
         """
 
         try:
-            client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
-            ai_response = client.models.generate_content(
-                model='gemini-2.0-flash',
-                contents=prompt
-            )
+            genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            ai_response = model.generate_content(prompt)
             raw = ai_response.text.strip()
             if raw.startswith('```'):
                 raw = raw.split('```')[1]
