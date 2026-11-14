@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from "./context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "./config";
@@ -10,12 +10,16 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [slow, setSlow] = useState(false);
+    const slowTimer = useRef(null);
 
     const { setAccessToken } = useContext(AuthContext);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
+        setSlow(false);
+        slowTimer.current = setTimeout(() => setSlow(true), 5000);
 
         fetch(`${API_URL}/api/login/`, {
             method: "POST",
@@ -42,7 +46,11 @@ const Login = () => {
         .catch(err => {
             setError(err.detail || "Login failed. Please try again.");
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+            setLoading(false);
+            setSlow(false);
+            clearTimeout(slowTimer.current);
+        });
     };
 
     return (
@@ -75,6 +83,7 @@ const Login = () => {
 
                 <button type="button" className="secondary" onClick={() => navigate("/forgot-password")}>Forgot Password?</button>
 
+                {slow && <p className="toast toast-success">⏳ Backend is waking up, this may take up to 60 seconds...</p>}
                 {error && <p className="toast toast-error">{error}</p>}
             </form>
         </div>

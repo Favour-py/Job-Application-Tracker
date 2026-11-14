@@ -19,7 +19,18 @@ import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
 import { API_URL } from "./config";
 
+// Ping backend every 14 minutes to prevent Render cold starts
+function useKeepAlive() {
+  useEffect(() => {
+    const ping = () => fetch(`${API_URL}/api/login/`, { method: 'HEAD' }).catch(() => {});
+    ping();
+    const id = setInterval(ping, 14 * 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+}
+
 function AppShell() {
+  useKeepAlive();
   const location = useLocation();
   const hideNav = ["/login", "/signup", "/forgot-password", "/reset-password"].includes(location.pathname.toLowerCase());
   const [applications, setApplications] = useState([]);
