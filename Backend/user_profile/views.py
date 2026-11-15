@@ -1,29 +1,31 @@
-from django.conf import settings
 import os
 import logging
-from django.shortcuts import render
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError as DjangoValidationError
-
-logger = logging.getLogger(__name__)
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import viewsets, generics
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
-from drf_yasg.utils import swagger_auto_schema
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from drf_yasg.utils import swagger_auto_schema
 from .models import UserProfile
-from .serializers import UserProfileSerializer, RegisterSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer
-# Create your views here.
+from .serializers import (
+    UserProfileSerializer, RegisterSerializer,
+    PasswordResetRequestSerializer, PasswordResetConfirmSerializer
+)
 
+logger = logging.getLogger(__name__)
 User = get_user_model()
 
 
@@ -110,6 +112,7 @@ class PasswordResetConfirmView(APIView):
 
         return Response({'message': 'Password reset successful.'}, status=status.HTTP_200_OK)
     
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     
     @swagger_auto_schema(

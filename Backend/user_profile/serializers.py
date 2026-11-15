@@ -1,7 +1,9 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 import cloudinary.uploader
 from .models import UserProfile
+
+User = get_user_model()
 
 class UserProfileSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(write_only=True, required=False)
@@ -35,6 +37,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'password2']
@@ -65,7 +68,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
     ui = serializers.CharField(required=False, allow_blank=True, write_only=True)
     token = serializers.CharField()
     password = serializers.CharField(write_only=True)
-    password_confirm = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         uid_value = attrs.get('uid') or attrs.get('ui')
@@ -74,6 +77,6 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         attrs['uid'] = uid_value
         attrs.pop('ui', None)
 
-        if attrs['password'] != attrs['password_confirm']:
+        if attrs['password'] != attrs['new_password']:
             raise serializers.ValidationError({"password": "Passwords do not match."})
         return attrs

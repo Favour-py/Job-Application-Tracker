@@ -34,7 +34,7 @@ const ResetPassword = () => {
                 uid,
                 token,
                 password,
-                password_confirm: passwordConfirm
+                new_password: passwordConfirm
             })
         })
         .then(response => response.json().then(data => ({ status: response.status, data })))
