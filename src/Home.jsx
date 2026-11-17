@@ -195,7 +195,7 @@ const Home = ({ applications, profile }) => {
                 </section>
             </div>
             <footer className="home-footer">
-                Designed and Developed by <a href="mailto:asemotafavour06@gmail.com">asemotafavour06@gmail.com</a>
+                Contact me: <a href="mailto:asemotafavour06@gmail.com">asemotafavour06@gmail.com</a>
             </footer>
         </div>
     );
