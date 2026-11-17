@@ -25,12 +25,6 @@ export const AuthProvider = ({ children }) => {
         }
 
         const payload = parseToken(token);
-        if (currentUser && payload?.user_id !== currentUser) {
-            setAccessToken(null);
-            setCurrentUser(null);
-            return;
-        }
-
         setCurrentUser(payload?.user_id ?? null);
         setAccessToken(token);
     };

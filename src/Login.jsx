@@ -39,7 +39,6 @@ const Login = () => {
             return data;
         }))
         .then(data => {
-            setError("");
             setAccessToken(data.access);
             navigate("/");
         })
@@ -83,7 +82,7 @@ const Login = () => {
 
                 <button type="button" className="secondary" onClick={() => navigate("/forgot-password")}>Forgot Password?</button>
 
-                {slow && <p className="toast toast-success">⏳ Backend is waking up, this may take up to 60 seconds...</p>}
+                {slow && <p className="toast toast-success">⏳ Server is waking up, this may take few seconds...</p>}
             </form>
         </div>
     );
