@@ -3,13 +3,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import { fetchWithAuth } from "./api";
 import { API_URL } from "./config";
+import toast from "react-hot-toast";
 
 const EditApplication = ({ applications, setApplications }) => {
     const { id } = useParams();
     const application = applications.find((application) => application.id === Number(id));
     const { accessToken, setAccessToken } = useContext(AuthContext);
     const navigate = useNavigate();
-    const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
     const [title, setTitle] = useState(application.title);
@@ -41,7 +41,7 @@ const EditApplication = ({ applications, setApplications }) => {
             ));
             navigate(`/ApplicationDetails/${application.id}`);
         } catch (err) {
-            setError("Failed to update application. Please try again.");
+            toast.error("Failed to update application. Please try again.");
         } finally {
             setSubmitting(false);
         }
@@ -90,7 +90,6 @@ const EditApplication = ({ applications, setApplications }) => {
                     {submitting ? "Saving..." : "Save Changes"}
                 </button>
             </form>
-            {error && <p className="toast toast-error">{error}</p>}
         </div>
     );
 }

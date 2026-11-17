@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "./config";
+import toast from "react-hot-toast";
 
 const Signup = () => {
 
@@ -8,16 +9,12 @@ const Signup = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setErrors({});
-        setSuccessMessage("");
         setLoading(true);
 
         fetch(`${API_URL}/api/register/`, {
@@ -37,7 +34,7 @@ const Signup = () => {
             return data;
         }))
         .then(() => {
-            setSuccessMessage("User registered successfully!");
+            toast.success("Account created! Redirecting to login...");
             setEmail("");
             setUsername("");
             setPassword("");
@@ -45,7 +42,10 @@ const Signup = () => {
             navigate("/Login");
         })
         .catch(error => {
-            setErrors(error);
+            Object.entries(error).forEach(([field, messages]) => {
+                const label = field === 'non_field_errors' ? '' : `${field.charAt(0).toUpperCase() + field.slice(1)}: `;
+                messages.forEach(msg => toast.error(`${label}${msg}`));
+            });
         })
         .finally(() => setLoading(false));
     };
@@ -96,16 +96,6 @@ const Signup = () => {
                     <button type="button" className="secondary">Sign up with Google</button>
                     <button type="button" className="secondary">Sign up with Facebook</button>
                 </div>
-
-                {successMessage && <p className="toast toast-success">{successMessage}</p>}
-                {Object.entries(errors).map(([field, messages]) => {
-                    const fieldName = field === "non_field_errors" ? "Error" : field.charAt(0).toUpperCase() + field.slice(1);
-                    return messages.map((message, index) => (
-                        <p key={`${field}-${index}`} className="toast toast-error">
-                            <strong>{fieldName}:</strong> {message}
-                        </p>
-                    ));
-                })}
             </form>
         </div>
     );

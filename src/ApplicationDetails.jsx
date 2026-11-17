@@ -3,12 +3,12 @@ import { useContext, useState } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { fetchWithAuth } from "./api";
 import { API_URL } from "./config";
+import toast from "react-hot-toast";
 
 
 const ApplicationDetails = ({applications, setApplications}) => {
     const navigate = useNavigate();
     const { accessToken, setAccessToken } = useContext(AuthContext);
-    const [error, setError] = useState("");
     const [deleting, setDeleting] = useState(false);
 
     const { id } = useParams()
@@ -32,7 +32,7 @@ const ApplicationDetails = ({applications, setApplications}) => {
         setApplications(applications.filter((app) => app.id !== application.id));
         navigate('/ViewApplication');
     } catch (err) {
-        setError("Failed to delete application. Please try again.");
+        toast.error("Failed to delete application. Please try again.");
     } finally {
         setDeleting(false);
     }
@@ -88,7 +88,6 @@ const ApplicationDetails = ({applications, setApplications}) => {
                     </div>
                 )}
             </div>
-            {error && <p className="toast toast-error">{error}</p>}
         </div>
      );
 }

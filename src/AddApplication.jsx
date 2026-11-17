@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { fetchWithAuth } from "./api";
 import { API_URL } from "./config";
+import toast from "react-hot-toast";
 
 const AddApplication = ({setApplications}) => {
 
@@ -16,12 +17,10 @@ const AddApplication = ({setApplications}) => {
     const [jobDescription, setJobDescription] = useState("");
     const [extractUrl, setExtractUrl] = useState("");
     const [extracting, setExtracting] = useState(false);
-    const [extractError, setExtractError] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
     const { accessToken, setAccessToken } = useContext(AuthContext);
     const navigate = useNavigate();
-    const [error, setError] = useState("");
 
     const handleExtract = async () => {
         if (!extractUrl) return;
@@ -45,9 +44,9 @@ const AddApplication = ({setApplications}) => {
             setJobUrl(extractUrl);
         } catch (err) {
             if (err.message === 'Failed to fetch') {
-                setExtractError("Network error — could not reach the server. Please check your connection.");
+                toast.error("Network error — could not reach the server.");
             } else {
-                setExtractError(err.message || "Failed to extract job details. Try again or fill in manually.");
+                toast.error(err.message || "Failed to extract job details. Try again or fill in manually.");
             }
         } finally {
             setExtracting(false);
@@ -73,7 +72,7 @@ const AddApplication = ({setApplications}) => {
             setApplications(prevApplications => [...prevApplications, createdApplication]);
             navigate('/ViewApplication');
         } catch (err) {
-            setError("Failed to add application. Please try again.");
+            toast.error("Failed to add application. Please try again.");
         } finally {
             setSubmitting(false);
         }
@@ -90,7 +89,6 @@ const AddApplication = ({setApplications}) => {
                 <button type="button" onClick={handleExtract} disabled={extracting}>
                     {extracting ? "Extracting..." : "Extract with AI"}
                 </button>
-                {extractError && <p className="toast toast-error">{extractError}</p>}
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -120,7 +118,6 @@ const AddApplication = ({setApplications}) => {
                     {submitting ? "Adding..." : "Add Application"}
                 </button>
             </form>
-            {error && <p className="toast toast-error">{error}</p>}
         </div>
      );
 }

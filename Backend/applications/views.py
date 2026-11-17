@@ -1,5 +1,7 @@
-from django.shortcuts import render
-from django.conf import settings
+import os
+import json
+import logging
+from bs4 import BeautifulSoup
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,10 +10,6 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Application
 from .serializers import ApplicationSerializer
 import requests
-import os
-import json
-import logging
-from bs4 import BeautifulSoup
 import google.genai as genai
 from google.genai import types
 

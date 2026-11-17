@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { API_URL } from "./config";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
     const location = useLocation();
@@ -12,16 +13,12 @@ const ResetPassword = () => {
 
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setMessage("");
-        setError("");
 
         if (password !== passwordConfirm) {
-            setError("Passwords do not match.");
+            toast.error("Passwords do not match.");
             return;
         }
 
@@ -43,15 +40,14 @@ const ResetPassword = () => {
                 throw data;
             }
 
-            setMessage(data.message || "Password reset successful.");
+            toast.success(data.message || "Password reset successful.");
             setPassword("");
             setPasswordConfirm("");
-
             setTimeout(() => navigate("/Login"), 1500);
         })
         .catch(err => {
             const serverError = err?.password || err?.error || "Reset failed. Please try again.";
-            setError(serverError);
+            toast.error(Array.isArray(serverError) ? serverError.join(' ') : serverError);
         });
     };
 
@@ -76,8 +72,6 @@ const ResetPassword = () => {
             {!uid || !token ? (
                 <p className="error">Invalid or missing reset link.</p>
             ) : null}
-            {message && <p className="success">{message}</p>}
-            {error && <p className="error">{error}</p>}
         </div>
     );
 };

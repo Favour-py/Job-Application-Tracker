@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { fetchWithAuth } from "./api";
 import { API_URL } from "./config";
+import toast from "react-hot-toast";
 
 const getImageSrc = (image, image_url) => {
     if (image instanceof File) return URL.createObjectURL(image);
@@ -17,7 +18,6 @@ const EditProfile = ({profile, setProfile}) => {
 
     const navigate = useNavigate();
     const { accessToken, setAccessToken } = useContext(AuthContext);
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     
     useEffect(() => {
@@ -61,7 +61,7 @@ const EditProfile = ({profile, setProfile}) => {
             setProfile(data);
             navigate('/');
         } catch (err) {
-            setError("Failed to save profile. Please try again.");
+            toast.error("Failed to save profile. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -83,7 +83,7 @@ const EditProfile = ({profile, setProfile}) => {
             setProfile({ name: "", title: "", image: "" });
             navigate('/');
         } catch (error) {
-            setError("Failed to delete profile. Please try again.");
+            toast.error("Failed to delete profile. Please try again.");
         }
     }
 
@@ -130,7 +130,6 @@ const EditProfile = ({profile, setProfile}) => {
                         {loading ? "Saving..." : (profile.id ? "Update Profile" : "Create Profile")}
                     </button>
                 </form>
-                {error && <p className="toast toast-error">{error}</p>}
                 {profile.id && (
                     <button onClick={handleDelete}>Delete Profile</button>
                 )}

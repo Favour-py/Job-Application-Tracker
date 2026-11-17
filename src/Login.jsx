@@ -2,13 +2,13 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from "./context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "./config";
+import toast from "react-hot-toast";
 
 const Login = () => {
     const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [slow, setSlow] = useState(false);
     const slowTimer = useRef(null);
@@ -44,7 +44,7 @@ const Login = () => {
             navigate("/");
         })
         .catch(err => {
-            setError(err.detail || "Login failed. Please try again.");
+            toast.error(err.detail || "Login failed. Please try again.");
         })
         .finally(() => {
             setLoading(false);
@@ -84,7 +84,6 @@ const Login = () => {
                 <button type="button" className="secondary" onClick={() => navigate("/forgot-password")}>Forgot Password?</button>
 
                 {slow && <p className="toast toast-success">⏳ Backend is waking up, this may take up to 60 seconds...</p>}
-                {error && <p className="toast toast-error">{error}</p>}
             </form>
         </div>
     );
