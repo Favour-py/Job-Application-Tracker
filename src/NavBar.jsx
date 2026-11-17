@@ -7,6 +7,7 @@ import AddIcon from "./add-to-queue-svgrepo-com.svg?react";
 import ViewIcon from "./view-grid-svgrepo-com.svg?react";
 import ProfileIcon from "./profile-round-1342-svgrepo-com.svg?react";
 import LogoutIcon from "./logout-2-svgrepo-com.svg?react";
+import logoImg from "./JOB APPLICATION TRACKER_20261117_024402_0000.png";
 
 const navLinks = [
     { to: "/", label: "Home", Icon: HomeIcon, end: true },
@@ -52,8 +53,7 @@ const NavBar = () => {
 
                 {/* ── Brand ── */}
                 <Link to="/" className="brand-wrap" aria-label="Go to homepage">
-                    <div className="brand-icon">📁</div>
-                    <div className="brand-name">Job Application Tracker</div>
+                    <img src={logoImg} alt="Job Application Tracker" className="brand-logo" />
                 </Link>
 
                 {/* ── Desktop nav ── */}
@@ -92,7 +92,7 @@ const NavBar = () => {
             {/* ── Mobile drawer ── */}
             <div className={`mobile-drawer ${menuOpen ? "open" : ""}`}>
                 <div className="drawer-header">
-                    <span className="drawer-brand">📁 JAT</span>
+                    <img src={logoImg} alt="Job Application Tracker" className="drawer-logo" />
                     <button className="drawer-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
                         ✕
                     </button>

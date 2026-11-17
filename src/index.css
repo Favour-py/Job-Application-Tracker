@@ -180,24 +180,18 @@ img {
     white-space: nowrap;
 }
 
-.brand-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%);
-    color: white;
-    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.25);
-    font-size: 0.95rem;
-    flex-shrink: 0;
+.brand-logo {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    display: block;
 }
 
-.brand-name {
-    font-size: 1.3rem;
-    color: var(--primary);
-    line-height: 1;
-    white-space: nowrap;
+.drawer-logo {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+    display: block;
 }
 
 /* Desktop nav pill */
@@ -357,6 +351,20 @@ img {
     font-weight: 800;
     color: var(--primary);
     letter-spacing: -0.02em;
+}
+
+/* ── Spinner ── */
+.spinner-fullpage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    background: var(--page-bg);
+}
+
+.spinner-img {
+    display: block;
 }
 
 .drawer-close {
