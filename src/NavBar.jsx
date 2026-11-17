@@ -7,7 +7,7 @@ import AddIcon from "./add-to-queue-svgrepo-com.svg?react";
 import ViewIcon from "./view-grid-svgrepo-com.svg?react";
 import ProfileIcon from "./profile-round-1342-svgrepo-com.svg?react";
 import LogoutIcon from "./logout-2-svgrepo-com.svg?react";
-import logoImg from "./JOB APPLICATION TRACKER_20261117_024402_0000.png";
+import logoImg from "./JOB_APPLICATION_TRACKER_20261117_024402_0000-removebg-preview.png";
 
 const navLinks = [
     { to: "/", label: "Home", Icon: HomeIcon, end: true },
