@@ -25,7 +25,6 @@ const AddApplication = ({setApplications}) => {
     const handleExtract = async () => {
         if (!extractUrl) return;
         setExtracting(true);
-        setExtractError("");
         try {
             const data = await fetchWithAuth(
                 `${API_URL}/api/extract-job/`,
@@ -55,7 +54,6 @@ const AddApplication = ({setApplications}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
         setSubmitting(true);
         const newApplication = { title, company, location, status, application_date: applicationDate, url: jobUrl, notes, job_description: jobDescription };
         try {

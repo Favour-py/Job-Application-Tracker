@@ -92,9 +92,6 @@ const Signup = () => {
                         {loading ? "Signing up..." : "Sign Up"}
                     </button>
                     <p>Already have an account? <a href="/Login" className="login-link">Log In</a></p>
-                    <div className="divider">Or</div>
-                    <button type="button" className="secondary">Sign up with Google</button>
-                    <button type="button" className="secondary">Sign up with Facebook</button>
                 </div>
             </form>
         </div>
