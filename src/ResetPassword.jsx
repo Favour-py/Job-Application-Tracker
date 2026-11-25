@@ -67,11 +67,11 @@ const ResetPassword = () => {
                     value={passwordConfirm}
                     onChange={(e) => setPasswordConfirm(e.target.value)}
                 />
-                <button type="submit">Update Password</button>
+                <button type="submit" disabled={!uid || !token}>Update Password</button>
             </form>
-            {!uid || !token ? (
-                <p className="error">Invalid or missing reset link.</p>
-            ) : null}
+            {(!uid || !token) && (
+                <p className="error">Invalid or missing reset link. Please request a new one.</p>
+            )}
         </div>
     );
 };

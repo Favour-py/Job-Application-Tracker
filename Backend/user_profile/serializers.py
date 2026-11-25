@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 import cloudinary.uploader
 from .models import UserProfile
 
@@ -50,7 +52,10 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError("Passwords do not match.")
-
+        try:
+            validate_password(attrs['password'])
+        except DjangoValidationError as e:
+            raise serializers.ValidationError({'password': list(e.messages)})
         return attrs
     
     def create(self, validated_data):

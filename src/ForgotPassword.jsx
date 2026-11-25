@@ -4,31 +4,23 @@ import toast from "react-hot-toast";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
-    const [message, setMessage] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         fetch(`${API_URL}/api/password-reset/`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email })
         })
         .then(response => response.json().then(data => ({ status: response.status, data })))
         .then(({ status, data }) => {
-            if (status >= 400) {
-                throw data;
-            }
-
-            setMessage(data.message || "If that email exists, a reset link has been sent.");
+            if (status >= 400) throw data;
             toast.success(data.message || "If that email exists, a reset link has been sent.");
             setEmail("");
         })
         .catch(err => {
-            const serverError = err?.email || err?.detail || "Unable to send reset email.";
-            toast.error(serverError);
+            toast.error(err?.email || err?.detail || "Unable to send reset email.");
         });
     };
 
@@ -44,7 +36,6 @@ const ForgotPassword = () => {
                 />
                 <button type="submit">Send Reset Link</button>
             </form>
-            {message && <p className="success">{message}</p>}
         </div>
     );
 };

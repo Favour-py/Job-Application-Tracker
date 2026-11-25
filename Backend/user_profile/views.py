@@ -157,15 +157,25 @@ class RefreshTokenView(APIView):
                 {"error": "Refresh token not found."},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-            
+
         try:
             refresh_token = RefreshToken(refresh)
-            access = refresh_token.access_token
-            
-            return Response({
-                "access": str(access)
-            })
-            
+            access = str(refresh_token.access_token)
+            # Rotate: generate a new refresh token (old one is blacklisted by BLACKLIST_AFTER_ROTATION)
+            new_refresh = str(refresh_token)
+
+            response = Response({"access": access})
+            is_production = not settings.DEBUG
+            response.set_cookie(
+                key='refresh_token',
+                value=new_refresh,
+                httponly=True,
+                samesite='None' if is_production else 'Lax',
+                path='/',
+                secure=is_production,
+            )
+            return response
+
         except TokenError:
             return Response(
                 {"error": "Refresh token is invalid or expired."},

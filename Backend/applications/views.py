@@ -1,6 +1,9 @@
 import os
 import json
 import logging
+import ipaddress
+import socket
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from rest_framework import viewsets
 from rest_framework.views import APIView
@@ -14,6 +17,29 @@ import google.genai as genai
 from google.genai import types
 
 logger = logging.getLogger(__name__)
+
+ALLOWED_SCHEMES = {'http', 'https'}
+BLOCKED_HOSTS = {'localhost', '127.0.0.1', '0.0.0.0'}
+
+
+def _is_safe_url(url):
+    """Block SSRF: reject private/loopback IPs and non-http(s) schemes."""
+    try:
+        parsed = urlparse(url)
+        if parsed.scheme not in ALLOWED_SCHEMES:
+            return False
+        hostname = parsed.hostname
+        if not hostname:
+            return False
+        if hostname.lower() in BLOCKED_HOSTS:
+            return False
+        # Resolve to IP and check for private/loopback ranges
+        ip = ipaddress.ip_address(socket.gethostbyname(hostname))
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+            return False
+        return True
+    except Exception:
+        return False
 
 
 class ApplicationViewSet(viewsets.ModelViewSet):
@@ -95,6 +121,9 @@ class ExtractJobView(APIView):
         if not url:
             return Response({'error': 'URL is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        if not _is_safe_url(url):
+            return Response({'error': 'Invalid or disallowed URL.'}, status=status.HTTP_400_BAD_REQUEST)
+
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -102,10 +131,10 @@ class ExtractJobView(APIView):
         }
 
         try:
-            response = requests.get(url, timeout=10, headers=headers)
+            response = requests.get(url, timeout=10, headers=headers, allow_redirects=True)
             response.raise_for_status()
-        except Exception as e:
-            return Response({'error': f'Failed to fetch URL: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return Response({'error': 'Failed to fetch the job page. The site may block automated access.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if len(response.text) < 200:
             return Response({'error': 'Page returned no content. This site may block automated access.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -122,9 +151,9 @@ class ExtractJobView(APIView):
 
         try:
             data = _extract_with_ai(text)
-        except json.JSONDecodeError as e:
-            return Response({'error': f'Failed to parse AI response: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except Exception as e:
-            return Response({'error': f'AI extraction failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except json.JSONDecodeError:
+            return Response({'error': 'Could not parse job details from this page.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception:
+            return Response({'error': 'AI extraction failed. Please fill in the details manually.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(data, status=status.HTTP_200_OK)

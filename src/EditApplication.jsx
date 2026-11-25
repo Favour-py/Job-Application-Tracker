@@ -22,7 +22,6 @@ const EditApplication = ({ applications, setApplications }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
         setSubmitting(true);
         try {
             const updatedApplication = { title, company, location, status, application_date: applicationDate, url: jobUrl, notes };
