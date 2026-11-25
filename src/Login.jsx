@@ -59,13 +59,17 @@ const Login = () => {
 
                 <input
                     type="text"
+                    name="Username"
                     placeholder="Username"
+                    autoComplete="Username"
+                    required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
 
                 <input
                     type="password"
+                    name="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

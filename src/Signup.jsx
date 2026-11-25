@@ -60,20 +60,26 @@ const Signup = () => {
                 <div className="auth-fields">
                     <input
                         type="text"
-                        placeholder="Full Name"
+                        placeholder="Username"
+                        autoComplete="username"
+                        required
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
 
                     <input
                         type="email"
+                        name="email"
                         placeholder="Email Address"
+                        autoComplete="email"
+                        required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
 
                     <input
                         type="password"
+                        name="password"
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
