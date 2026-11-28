@@ -34,3 +34,6 @@ pnpm-debug.log*
 .idea/
 *.swp
 *.swo
+
+# Project documentation (local only)
+FULLSTACK_PROJECT_GUIDE.md
