@@ -161,7 +161,12 @@ class RefreshTokenView(APIView):
         try:
             refresh_token = RefreshToken(refresh)
             access = str(refresh_token.access_token)
-            # Rotate: generate a new refresh token (old one is blacklisted by BLACKLIST_AFTER_ROTATION)
+
+            refresh_token.blacklist()
+            refresh_token.set_jti()
+            refresh_token.set_exp()
+            refresh_token.set_iat()
+            refresh_token.outstand()
             new_refresh = str(refresh_token)
 
             response = Response({"access": access})

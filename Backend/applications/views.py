@@ -131,7 +131,9 @@ class ExtractJobView(APIView):
         }
 
         try:
-            response = requests.get(url, timeout=10, headers=headers, allow_redirects=True)
+            response = requests.get(url, timeout=10, headers=headers, allow_redirects=False)
+            if response.is_redirect:
+                return Response({'error': 'Redirects are not allowed for job URLs.'}, status=status.HTTP_400_BAD_REQUEST)
             response.raise_for_status()
         except Exception:
             return Response({'error': 'Failed to fetch the job page. The site may block automated access.'}, status=status.HTTP_400_BAD_REQUEST)
